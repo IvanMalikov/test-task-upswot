@@ -4,11 +4,21 @@
             <div class="log-inner-inputs">
                 <div class="name-input">
                     <p class="label">Name</p>
-                    <InputComponent type="text" v-model="userName"/>
+                    <InputComponent 
+                        v-model="userName"
+                        type="text"
+                        :error="errors.userName.error"
+                        :errorText="errors.userName.errorText"
+                    />
                 </div>
                 <div class="password-input">
                     <p class="label">Password</p>
-                    <InputComponent type="text" v-model="password"/>
+                    <InputComponent 
+                        v-model="password"
+                        type="text"
+                        :error="errors.password.error"
+                        :errorText="errors.password.errorText"
+                    />
                 </div>
                 <div class="login-button">
                     <button class="button" @click="onSubmit">LOGIN</button>
@@ -22,6 +32,7 @@
 
 <script>
 import InputComponent from '../components/InputComponent.vue'
+import { ROUTES } from '../router/router-constants'
     export default {
         components: { 
             InputComponent 
@@ -30,16 +41,33 @@ import InputComponent from '../components/InputComponent.vue'
             return {
                 userName: '',
                 password: '',
+                errors: {
+                    userName: {
+                        error: false,
+                        errorText: 'The wrong username'
+                    },
+                    password: {
+                        error: false,
+                        errorText: 'The wrong password'
+                    }
+                }
             }
         },
 
         methods: {
             onSubmit() {
-                if(this.userName === 'Admin' && this.password === '12345') {
-                    localStorage.setItem('Auth', 'true')
+                const isValid = this.validate()
+                if(isValid) {
                     localStorage.setItem('username', this.userName)
-                    this.$router.push('/todo')
+                    localStorage.setItem('Auth', 'true')
+                    this.$router.push(ROUTES.TODO.path)
                 }
+            },
+            validate() { 
+                this.errors.userName.error = this.userName !== 'Admin'
+                this.errors.password.error = this.password !== '12345'
+
+                return !(this.errors.userName.error || this.errors.password.error)
             }
         }
     }

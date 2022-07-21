@@ -1,10 +1,19 @@
 <template>
+<div class="input-component">
     <input 
         v-bind="$attrs"
         :value="value"
-        class="input-component"
+        class="input-field"
         @input="onInput"
     >
+    <span 
+        class="error-message" 
+        v-if="error"
+    >
+        <img src="../assets/error-icon.png" alt="">
+        {{errorText}}
+    </span>
+</div>
 </template>
 
 <script>
@@ -14,6 +23,14 @@
             value: {
                 required: true,
                 type: [String, Number]
+            },
+            error: {
+                type: Boolean,
+                default: false
+            },
+            errorText: {
+                type: String,
+                default: ''
             }
         },
         methods: {
@@ -25,12 +42,17 @@
 </script>
 
 <style lang="scss" scoped>
-.input-component {
+.input-field {
     width: 398px;
     height: 53px;
     font-size: 18px;
     line-height: 21px;
     padding-left: 15px;
+}
+.error-message {
+    color: red;
+    font-size: 16px;
+    line-height: 19px;
 }
 
 @media (max-width: 500px) {
